@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Minecraft.Portforwarded.Server
+namespace Portforwarded.Server
 {
     class Program
     {
