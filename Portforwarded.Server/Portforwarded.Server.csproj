@@ -1,0 +1,36 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net5.0</TargetFramework>
+    <Authors>NoLifeKing85</Authors>
+    <Company>NoLifeKing85</Company>
+    <PackageId>Portforwarded.Server</PackageId>
+    <Product>Portforwarded.Server</Product>
+    <AssemblyName>Portforwarded.Server</AssemblyName>
+    <RootNamespace>Portforwarded.Server</RootNamespace>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <PlatformTarget>x64</PlatformTarget>
+    <DebugType>portable</DebugType>
+    <DebugSymbols>true</DebugSymbols>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <PlatformTarget>x64</PlatformTarget>
+    <DebugType>embedded</DebugType>
+    <DebugSymbols>true</DebugSymbols>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Folder Include="Lib\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="Open.Nat">
+      <HintPath>Lib\Open.Nat.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+</Project>
