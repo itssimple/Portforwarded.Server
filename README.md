@@ -1,6 +1,9 @@
 # Portforwarded.Server
 
-Simple software to help out with port forwarding
+Simple software to help out with port forwarding.
+
+Please note that this software will only help with UPnP, if you have a firewall on your computer, you need to configure it/turn it off. (Until I figure out a global way to fix that on all platforms)
+
 
 ## Minecraft (Java) example
 
