@@ -9,14 +9,27 @@ Please note that this software will only help with UPnP, if you have a firewall 
 
 ```powershell
 # Windows
-./Portforwarded.Server executable:file="java" executable:workingdirectory="C:\minecraftserver" executable:parameters="-Xmx4096M -Xms4096M -jar server.jar nogui" upnp:0:LocalIPAddress="192.168.1.110" upnp:0:Protocol="Tcp" upnp:0:LocalPort=25565 upnp:0:PublicPort=25565
+./Portforwarded.Server executable:file="java" executable:workingdirectory="C:\minecraftserver" executable:parameters="-Xmx4096M -Xms4096M -jar server.jar nogui" upnp:0:Protocol="Tcp" upnp:0:LocalPort=25565 upnp:0:PublicPort=25565
 ```
 
 ```bash
 # Linux / macOS
-./Portforwarded.Server executable:file="java" executable:workingdirectory="/minecraft/server" executable:parameters="-Xmx4096M -Xms4096M -jar server.jar nogui" upnp:0:LocalIPAddress="192.168.1.110" upnp:0:Protocol="Tcp" upnp:0:LocalPort=25565 upnp:0:PublicPort=25565
+./Portforwarded.Server executable:file="java" executable:workingdirectory="/minecraft/server" executable:parameters="-Xmx4096M -Xms4096M -jar server.jar nogui"  upnp:0:Protocol="Tcp" upnp:0:LocalPort=25565 upnp:0:PublicPort=25565
 ```
 
+## Sims 4 example
+
+```powershell
+# Windows
+./Portforwarded.Server executable:file="S4MP Launcher 0.28.1-public.exe" executable:workingdirectory="C:\Users\USER\Documents\Electronic Arts\The Sims 4" upnp:0:Protocol="Tcp" upnp:0:LocalPort=7654 upnp:0:PublicPort=7654
+```
+
+```bash
+# macOS
+./Portforwarded.Server executable:file="S4MP Launcher-0.28.1-public.dmg" executable:workingdirectory="/Users/USER/Documents/Electronic Arts/The Sims 4" upnp:0:Protocol="Tcp" upnp:0:LocalPort=7654 upnp:0:PublicPort=7654
+```
+
+---
 
 ### Breakdown of the options
 
