@@ -35,6 +35,7 @@ Please note that this software will only help with UPnP, if you have a firewall 
 
 | Configuration key | Configuration value | Description |
 |:------------------|:--------------------|:------------|
+| `testmode` | `true` | Will not start executable, only test UPnP |
 | `executable:file` | `java` | What executable to run |
 | `executable:workingdirectory` | `/minecraft/server` | The directory that the process will be started from |
 | `executable:parameters` | `-Xmx4096M -Xms4096M -jar server.jar nogui` | The arguments passed to the `executable:file` |

@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -10,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace Portforwarded.Server
 {
-    class Program
+    internal class Program
     {
         public static volatile bool SENDING_CTRL_C_TO_CHILD = false;
 
@@ -19,7 +20,11 @@ namespace Portforwarded.Server
         static Open.Nat.NatDevice UPnPDevice;
         public static CancellationTokenSource CancellationTokenSource { get; private set; }
 
+        static bool TestMode = false;
+
         static CancellationToken cancellationToken;
+
+        [RequiresUnreferencedCode("Calls Portforwarded.Server.Program.TeardownPortforwarding()")]
         async static Task<int> Main(string[] args)
         {
             CancellationTokenSource = new CancellationTokenSource();
@@ -54,12 +59,21 @@ namespace Portforwarded.Server
             try
             {
                 await SetupPortforwarding();
-                await LaunchProcess();
+                if (!TestMode)
+                {
+                    await LaunchProcess();
+                }
+                else
+                {
+                    LogLine("Running in test mode, skipping process launch", ConsoleColor.Yellow);
+                    await Task.Delay(5000);
+                }
             }
             catch (Exception ex)
             {
                 LogLine(ex.ToString(), ConsoleColor.Red);
-            } finally
+            }
+            finally
             {
                 CancellationTokenSource.Dispose();
                 await TeardownPortforwarding();
@@ -159,6 +173,7 @@ namespace Portforwarded.Server
             return IPAddress.Parse(matchingIPAddress);
         }
 
+        [RequiresUnreferencedCode("Calls Portforwarded.Server.Program.GetForwardMappingFromConfig()")]
         private static async Task SetupPortforwarding()
         {
             LogLine("Setting up portforwarding", ConsoleColor.Green);
@@ -176,6 +191,7 @@ namespace Portforwarded.Server
             await GetCurrentMappings();
         }
 
+        [RequiresUnreferencedCode("Calls Portforwarded.Server.Program.GetForwardMappingFromConfig()")]
         private static async Task TeardownPortforwarding()
         {
             LogLine("Tearing down portforwarding", ConsoleColor.Green);
@@ -206,6 +222,7 @@ namespace Portforwarded.Server
             }
         }
 
+        [RequiresUnreferencedCode("Calls Microsoft.Extensions.Configuration.ConfigurationBinder.Get<T>()")]
         private static IEnumerable<Open.Nat.Mapping> GetForwardMappingFromConfig()
         {
             return Configuration.GetSection("upnp").Get<List<ForwardMapping>>().Select(GetMapping);
@@ -233,14 +250,20 @@ namespace Portforwarded.Server
                             .AddCommandLine(args)
                             .Build();
 
-            if (string.IsNullOrEmpty(Configuration["executable:file"]))
-            {
-                errors.Add("- Missing option 'executable:file'");
-            }
+            // Check if the configuration is set to testing mode, and if so, ignore missing executable and working directory
+            TestMode = Configuration["testmode"] == "true";
 
-            if (string.IsNullOrWhiteSpace(Configuration["executable:workingdirectory"]))
+            if (!TestMode)
             {
-                errors.Add("- Missing option 'executable:workingdirectory'");
+                if (string.IsNullOrEmpty(Configuration["executable:file"]))
+                {
+                    errors.Add("- Missing option 'executable:file'");
+                }
+
+                if (string.IsNullOrWhiteSpace(Configuration["executable:workingdirectory"]))
+                {
+                    errors.Add("- Missing option 'executable:workingdirectory'");
+                }
             }
 
             if (Configuration.GetSection("upnp") == null || !Configuration.GetSection("upnp").GetChildren().Any())
