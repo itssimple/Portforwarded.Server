@@ -24,7 +24,6 @@ namespace Portforwarded.Server
 
         static CancellationToken cancellationToken;
 
-        [RequiresUnreferencedCode("Calls Portforwarded.Server.Program.TeardownPortforwarding()")]
         async static Task<int> Main(string[] args)
         {
             CancellationTokenSource = new CancellationTokenSource();
@@ -84,14 +83,14 @@ namespace Portforwarded.Server
 
         private static void Console_CancelKeyPress(object sender, ConsoleCancelEventArgs e)
         {
-            if (process != null && !process.HasExited)
+            if (TestMode || (process != null && !process.HasExited))
             {
                 CancellationTokenSource.CancelAfter(5_000);
 
-                process.CancelOutputRead();
-                process.CancelErrorRead();
-                process.CloseMainWindow();
-                process.Kill(true);
+                process?.CancelOutputRead();
+                process?.CancelErrorRead();
+                process?.CloseMainWindow();
+                process?.Kill(true);
             }
 
             LogLine("Exiting process", ConsoleColor.Red);
@@ -173,7 +172,6 @@ namespace Portforwarded.Server
             return IPAddress.Parse(matchingIPAddress);
         }
 
-        [RequiresUnreferencedCode("Calls Portforwarded.Server.Program.GetForwardMappingFromConfig()")]
         private static async Task SetupPortforwarding()
         {
             LogLine("Setting up portforwarding", ConsoleColor.Green);
@@ -191,7 +189,6 @@ namespace Portforwarded.Server
             await GetCurrentMappings();
         }
 
-        [RequiresUnreferencedCode("Calls Portforwarded.Server.Program.GetForwardMappingFromConfig()")]
         private static async Task TeardownPortforwarding()
         {
             LogLine("Tearing down portforwarding", ConsoleColor.Green);
@@ -222,7 +219,6 @@ namespace Portforwarded.Server
             }
         }
 
-        [RequiresUnreferencedCode("Calls Microsoft.Extensions.Configuration.ConfigurationBinder.Get<T>()")]
         private static IEnumerable<Open.Nat.Mapping> GetForwardMappingFromConfig()
         {
             return Configuration.GetSection("upnp").Get<List<ForwardMapping>>().Select(GetMapping);
