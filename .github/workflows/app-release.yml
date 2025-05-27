@@ -32,7 +32,7 @@ jobs:
         run: |
           # Define some variables for things we need
           tag=$(git describe --tags --abbrev=0)
-          release_name="Portforwarder.Server-$tag-${{ matrix.kind }}-${{ matrix.architecture }}"
+          release_name="Portforwarded.Server-$tag-${{ matrix.kind }}-${{ matrix.architecture }}"
 
           # Build everything
           dotnet publish Portforwarded.Server/Portforwarded.Server.csproj --runtime "${{ matrix.kind }}-${{ matrix.architecture }}" -c Release -o "$release_name" --self-contained
