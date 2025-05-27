@@ -7,46 +7,28 @@ on:
     branches: [ master ]
 
 jobs:
-  build-win64:
-
-    runs-on: windows-latest
-
+  build:
+    strategy:
+      matrix:
+        kind: ['linux', 'win', 'osx']
+        architecture: ['x64', 'arm64']
+        include:
+          - kind: linux
+            os: ubuntu-latest
+          - kind: win
+            os: windows-latest
+          - kind: osx
+            os: macos-latest
+    runs-on: ${{ matrix.os }}
     steps:
-    - uses: actions/checkout@v3
-    - name: Setup .NET
-      uses: actions/setup-dotnet@v1
-      with:
-        dotnet-version: 8.0.x
-    - name: Restore dependencies
-      run: dotnet restore
-    - name: Build win-x64
-      run: dotnet publish Portforwarded.Server/Portforwarded.Server.csproj -r win-x64 --self-contained -c Release -o published/win-x64
+      - name: Checkout
+        uses: actions/checkout@v3
 
-  build-linux64:
+      - name: Setup dotnet
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: 9.0.x
 
-    runs-on: ubuntu-latest
-
-    steps:
-    - uses: actions/checkout@v3
-    - name: Setup .NET
-      uses: actions/setup-dotnet@v1
-      with:
-        dotnet-version: 8.0.x
-    - name: Restore dependencies
-      run: dotnet restore
-    - name: Build linux-x64
-      run: dotnet publish Portforwarded.Server/Portforwarded.Server.csproj -r linux-x64 --self-contained -c Release -o published/linux-x64
-  build-osx64:
-
-    runs-on: macos-latest
-
-    steps:
-    - uses: actions/checkout@v3
-    - name: Setup .NET
-      uses: actions/setup-dotnet@v1
-      with:
-        dotnet-version: 8.0.x
-    - name: Restore dependencies
-      run: dotnet restore
-    - name: Build osx-x64
-      run: dotnet publish Portforwarded.Server/Portforwarded.Server.csproj -r osx-x64 --self-contained -c Release -o published/osx-x64
+      - name: Build
+        shell: bash
+        run: dotnet publish Portforwarded.Server/Portforwarded.Server.csproj --runtime "${{ matrix.kind }}-${{ matrix.architecture }}" -c Release --self-contained
