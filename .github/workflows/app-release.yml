@@ -8,14 +8,14 @@ jobs:
     name: Release
     strategy:
       matrix:
-        kind: ['linux', 'windows', 'macOS']
+        kind: ['linux', 'win', 'osx']
         architecture: ['x64', 'arm64']
         include:
           - kind: linux
             os: ubuntu-latest
-          - kind: windows
+          - kind: win
             os: windows-latest
-          - kind: macOS
+          - kind: osx
             os: macos-latest
     runs-on: ${{ matrix.os }}
     steps:
